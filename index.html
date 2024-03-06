@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PicoAudio Demo</title>
+    <link href="./statics/bootstrap-5.2.2-dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+
+        #scrollToTopBtn {
+        display: none; 
+        position: fixed; 
+        top: 50px; 
+        right: 100px; 
+        background-color: #0fb991; 
+        color: #fff; 
+        border: none;
+        font-size: 16px; 
+        border-radius: 20%; 
+        padding: 20px;
+        cursor: pointer; 
+        z-index: 1;
+        }
+
+     
+        #scrollToTopBtn:hover {
+        background-color: #7da2ff;
+        }
+        
+        header {
+            background-color: #bdd4e4;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #bdd4e4;
+            color: #333333;
+            margin: 0;
+            padding: 40px;
+            
+        }
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+        }
+        
+        
+        nav {
+            background-color: #ffffff;
+            color: #ffffff;
+            padding: 10px 0;
+            text-align: center;
+            margin-bottom: 20px;
+            border-radius: 10px; 
+            overflow: hidden; 
+        }
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+            font-size: 20px; 
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+        }
+        .image-container {
+            flex: 1 0 33.3333%;
+            max-width: 33.3333%;
+            box-sizing: border-box;
+            padding: 10px;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        .text-container {
+            flex: 1 0 66.6667%;
+            max-width: 66.6667%;
+            box-sizing: border-box;
+            padding: 10px;
+            color: rgb(11, 39, 31);
+            font-size: 18px; 
+        }
+
+        .instance_container {
+            padding: 0px 0px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: #e3eff5;
+            box-shadow: 4px 8px 5px #bdd4e4;
+            border-radius: 8px;
+        }
+        .instance_text_container{
+            border-radius: 8px 8px 0px 0px;
+            padding: 2.5px 12px;
+            font-size: 18px; 
+            
+            background-color: #bdd4e4;
+        }
+
+        .sample_container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            background-color: #e3eff5;
+            border-radius: 8px;
+        }
+        .sample_4 {
+            flex: 0 0 24%; 
+            border: 0px solid #ddd;
+            border-radius: 8px;
+            padding: 5px;
+            margin: 5px;
+            text-align: center;    
+            
+        }
+        .sample_4 img {
+            max-width: 100%;
+            width:auto;       
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+  
+            
+        }
+        .sample_4 img:hover {
+            transform: scale(1.45); 
+            z-index: 2;
+        }
+        .sample_4 audio {
+            display: block;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+      
+    </style>
+</head>
+<body>
+    <button onclick="scrollToTop()" id="scrollToTopBtn" title="Back to top navigation bar">↑ Back to Top ↑</button>
+    <script>
+      
+        window.onscroll = function() {scrollFunction()};
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                document.getElementById("scrollToTopBtn").style.display = "block";
+            } else {
+                document.getElementById("scrollToTopBtn").style.display = "none";
+            }
+        }
+      
+        function scrollToTop() {
+            document.body.scrollTop = 0; 
+            document.documentElement.scrollTop = 0; 
+        }
+    </script>
+    <header>
+    <div class="container">
+        <div class="image-container">
+          <img src="store/PicoAudio_demoweb_2.png" alt="Image">
+        </div>
+        <div class="text-container">
+          <p>Welcome to <b>PicoAudio</b>: enabling <b>P</b>recise t<b>I</b>ming and frequency <b>CO</b>ntrollability of audio events </p>
+          <p>Here showcases the timing control performance of PicoAudio on four test sets. </p>
+          <p>Enjoy your browsing!</p>
+        </div>
+      </div>
+    </header>
+
+    <nav>
+    <ul>
+        <li><a href="#category1">(a). Onset-controllable single-event</a></li> &emsp; &emsp; &emsp; &emsp; &emsp;
+        <li><a href="#category2">(b). Frequency-controllable single-event</a></li><br /><br />
+        <li><a href="#category3">(c). Onset-controllable &thinsp; multi-event</a></li> &emsp; &emsp; &emsp; &emsp; &emsp;
+        <li><a href="#category4">(d). Frequency-controllable &thinsp; multi-event</a></li><br />
+    </ul>
+    </nav>
+
+    <div id="category1", class="border border-0 bg-light p-5 rounded mt-3 border-dark">
+        <h2>(a). Onset-controllable single-event. <span class="lead"><font size="3">Specify one sound event in the generated audio, with timing controlled by on- & off-set. </font></p></h2>     
+        <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; dog barking at 0.562-2.562, 4.25-6.25</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/onset_single/dog barking at 0.562-2.562, 4.25-6.25-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/onset_single/dog barking at 0.562-2.562, 4.25-6.25-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/dog barking at 0.562-2.562, 4.25-6.25-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/onset_single/dog barking at 0.562-2.562, 4.25-6.25-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/dog barking at 0.562-2.562, 4.25-6.25-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/onset_single/dog barking at 0.562-2.562, 4.25-6.25-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/dog barking at 0.562-2.562, 4.25-6.25-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/onset_single/dog barking at 0.562-2.562, 4.25-6.25-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>  
+        <br>        
+
+        <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; cow mooing at 0.958-3.582, 5.272-7.896</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/onset_single/cow mooing at 0.958-3.582, 5.272-7.896-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/onset_single/cow mooing at 0.958-3.582, 5.272-7.896-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/cow mooing at 0.958-3.582, 5.272-7.896-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/onset_single/cow mooing at 0.958-3.582, 5.272-7.896-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/cow mooing at 0.958-3.582, 5.272-7.896-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/onset_single/cow mooing at 0.958-3.582, 5.272-7.896-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/cow mooing at 0.958-3.582, 5.272-7.896-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/onset_single/cow mooing at 0.958-3.582, 5.272-7.896-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>
+        <br>   
+                  
+        <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; door knocking at 3.219-5.346, 7.058-9.185</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/onset_single/door knocking at 3.219-5.346, 7.058-9.185-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/onset_single/door knocking at 3.219-5.346, 7.058-9.185-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/door knocking at 3.219-5.346, 7.058-9.185-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/onset_single/door knocking at 3.219-5.346, 7.058-9.185-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/door knocking at 3.219-5.346, 7.058-9.185-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/onset_single/door knocking at 3.219-5.346, 7.058-9.185-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/door knocking at 3.219-5.346, 7.058-9.185-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/onset_single/door knocking at 3.219-5.346, 7.058-9.185-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>
+        <br>   
+               
+        <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; door slamming at 2.809-4.22, 6.263-8.502</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/onset_single/door slamming at 2.809-4.22, 6.263-8.502-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/onset_single/door slamming at 2.809-4.22, 6.263-8.502-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/door slamming at 2.809-4.22, 6.263-8.502-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/onset_single/door slamming at 2.809-4.22, 6.263-8.502-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/door slamming at 2.809-4.22, 6.263-8.502-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/onset_single/door slamming at 2.809-4.22, 6.263-8.502-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/door slamming at 2.809-4.22, 6.263-8.502-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/onset_single/door slamming at 2.809-4.22, 6.263-8.502-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>
+        <br> 
+
+        <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; duck quacking at 0.089-2.089, 4.166-5.984</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/onset_single/duck quacking at 0.089-2.089, 4.166-5.984-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/onset_single/duck quacking at 0.089-2.089, 4.166-5.984-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/duck quacking at 0.089-2.089, 4.166-5.984-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/onset_single/duck quacking at 0.089-2.089, 4.166-5.984-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/duck quacking at 0.089-2.089, 4.166-5.984-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/onset_single/duck quacking at 0.089-2.089, 4.166-5.984-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/duck quacking at 0.089-2.089, 4.166-5.984-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/onset_single/duck quacking at 0.089-2.089, 4.166-5.984-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>
+        <br> 
+
+        <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; explosion at 2.521-5.273</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/onset_single/explosion at 2.521-5.273-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/onset_single/explosion at 2.521-5.273-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/explosion at 2.521-5.273-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/onset_single/explosion at 2.521-5.273-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/explosion at 2.521-5.273-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/onset_single/explosion at 2.521-5.273-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/explosion at 2.521-5.273-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/onset_single/explosion at 2.521-5.273-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>
+        <br> 
+
+        <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; gunshot at 1.931-3.931, 4.716-6.716, 7.891-9.891</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/onset_single/gunshot at 1.931-3.931, 4.716-6.716, 7.891-9.891-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/onset_single/gunshot at 1.931-3.931, 4.716-6.716, 7.891-9.891-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/gunshot at 1.931-3.931, 4.716-6.716, 7.891-9.891-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/onset_single/gunshot at 1.931-3.931, 4.716-6.716, 7.891-9.891-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/gunshot at 1.931-3.931, 4.716-6.716, 7.891-9.891-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/onset_single/gunshot at 1.931-3.931, 4.716-6.716, 7.891-9.891-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/gunshot at 1.931-3.931, 4.716-6.716, 7.891-9.891-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/onset_single/gunshot at 1.931-3.931, 4.716-6.716, 7.891-9.891-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>
+        <br> 
+
+        <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; sheep goat bleating at 0.26-2.26, 3.592-5.592, 7.325-9.325</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/onset_single/sheep goat bleating at 0.26-2.26, 3.592-5.592, 7.325-9.325-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/onset_single/sheep goat bleating at 0.26-2.26, 3.592-5.592, 7.325-9.325-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/sheep goat bleating at 0.26-2.26, 3.592-5.592, 7.325-9.325-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/onset_single/sheep goat bleating at 0.26-2.26, 3.592-5.592, 7.325-9.325-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/sheep goat bleating at 0.26-2.26, 3.592-5.592, 7.325-9.325-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/onset_single/sheep goat bleating at 0.26-2.26, 3.592-5.592, 7.325-9.325-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/sheep goat bleating at 0.26-2.26, 3.592-5.592, 7.325-9.325-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/onset_single/sheep goat bleating at 0.26-2.26, 3.592-5.592, 7.325-9.325-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>
+        <br> 
+
+                <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; car horn honking at 1.566-4.25, 6.473-9.434</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/onset_single/car horn honking at 1.566-4.25, 6.473-9.434-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/onset_single/car horn honking at 1.566-4.25, 6.473-9.434-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/car horn honking at 1.566-4.25, 6.473-9.434-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/onset_single/car horn honking at 1.566-4.25, 6.473-9.434-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/car horn honking at 1.566-4.25, 6.473-9.434-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/onset_single/car horn honking at 1.566-4.25, 6.473-9.434-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/car horn honking at 1.566-4.25, 6.473-9.434-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/onset_single/car horn honking at 1.566-4.25, 6.473-9.434-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>
+        <br> 
+
+        <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; burping belching at 0.323-3.28, 4.07-6.229, 7.049-9.208</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/onset_single/burping belching at 0.323-3.28, 4.07-6.229, 7.049-9.208-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/onset_single/burping belching at 0.323-3.28, 4.07-6.229, 7.049-9.208-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/burping belching at 0.323-3.28, 4.07-6.229, 7.049-9.208-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/onset_single/burping belching at 0.323-3.28, 4.07-6.229, 7.049-9.208-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/burping belching at 0.323-3.28, 4.07-6.229, 7.049-9.208-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/onset_single/burping belching at 0.323-3.28, 4.07-6.229, 7.049-9.208-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_single/burping belching at 0.323-3.28, 4.07-6.229, 7.049-9.208-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/onset_single/burping belching at 0.323-3.28, 4.07-6.229, 7.049-9.208-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <br>
+
+    <div id="category2", class="border border-0 bg-light p-5 rounded mt-3 border-dark">
+        <h2>(b). Frequency-controllable single-event. <span class="lead"><font size="3">Specify one sound event in the generated audio, with timing controlled by occurrence frequency. </font></p></h2>     
+        <p> <font color="red">For practicality and generality, we also define 'a burst of consecutive short events' as 'one occurrence', such as 'a burst of dog barking' and 'a burst of knocking sounds'. </font></p>
+        <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; door slamming three times</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/frequency_single/door slamming three times-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/frequency_single/door slamming three times-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_single/door slamming three times-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/frequency_single/door slamming three times-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_single/door slamming three times-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/frequency_single/door slamming three times-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_single/door slamming three times-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/frequency_single/door slamming three times-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>
+        <br> 
+
+        <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; sheep goat bleating two times</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/frequency_single/sheep goat bleating two times-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/frequency_single/sheep goat bleating two times-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_single/sheep goat bleating two times-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/frequency_single/sheep goat bleating two times-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_single/sheep goat bleating two times-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/frequency_single/sheep goat bleating two times-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_single/sheep goat bleating two times-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/frequency_single/sheep goat bleating two times-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>
+        <br> 
+
+        <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; thump thud two times</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/frequency_single/thump thud two times-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/frequency_single/thump thud two times-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_single/thump thud two times-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/frequency_single/thump thud two times-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_single/thump thud two times-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/frequency_single/thump thud two times-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_single/thump thud two times-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/frequency_single/thump thud two times-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>
+        <br> 
+
+        <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; burping belching two times</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/frequency_single/burping belching two times-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/frequency_single/burping belching two times-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_single/burping belching two times-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/frequency_single/burping belching two times-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_single/burping belching two times-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/frequency_single/burping belching two times-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_single/burping belching two times-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/frequency_single/burping belching two times-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>
+        <br> 
+
+        <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; car horn honking three times</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/frequency_single/car horn honking three times-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/frequency_single/car horn honking three times-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_single/car horn honking three times-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/frequency_single/car horn honking three times-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_single/car horn honking three times-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/frequency_single/car horn honking three times-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_single/car horn honking three times-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/frequency_single/car horn honking three times-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>
+    
+    </div>
+    <br>
+
+    <div id="category3", class="border border-0 bg-light p-5 rounded mt-3 border-dark">
+        <h2>(c). Onset-controllable. <span class="lead"><font size="3">Specify multiple sound events in the generated audio, with timing controlled by on- & off-set. </font></p></h2>     
+        <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; cow mooing at 1.573-4.373 and gunshot at 7.482-9.482</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/onset_multi/cow mooing at 1.573-4.373 and gunshot at 7.482-9.482-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/onset_multi/cow mooing at 1.573-4.373 and gunshot at 7.482-9.482-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_multi/cow mooing at 1.573-4.373 and gunshot at 7.482-9.482-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/onset_multi/cow mooing at 1.573-4.373 and gunshot at 7.482-9.482-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_multi/cow mooing at 1.573-4.373 and gunshot at 7.482-9.482-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/onset_multi/cow mooing at 1.573-4.373 and gunshot at 7.482-9.482-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_multi/cow mooing at 1.573-4.373 and gunshot at 7.482-9.482-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/onset_multi/cow mooing at 1.573-4.373 and gunshot at 7.482-9.482-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>
+        <br> 
+        
+        <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; duck quacking at 3.246-5.246 and cat meowing at 7.245-8.635</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/onset_multi/duck quacking at 3.246-5.246 and cat meowing at 7.245-8.635-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/onset_multi/duck quacking at 3.246-5.246 and cat meowing at 7.245-8.635-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_multi/duck quacking at 3.246-5.246 and cat meowing at 7.245-8.635-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/onset_multi/duck quacking at 3.246-5.246 and cat meowing at 7.245-8.635-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_multi/duck quacking at 3.246-5.246 and cat meowing at 7.245-8.635-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/onset_multi/duck quacking at 3.246-5.246 and cat meowing at 7.245-8.635-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_multi/duck quacking at 3.246-5.246 and cat meowing at 7.245-8.635-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/onset_multi/duck quacking at 3.246-5.246 and cat meowing at 7.245-8.635-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>
+        <br> 
+
+        <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; gunshot at 0.007-2.007 and spraying at 4.251-5.047</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/onset_multi/gunshot at 0.007-2.007 and spraying at 4.251-5.047-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/onset_multi/gunshot at 0.007-2.007 and spraying at 4.251-5.047-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_multi/gunshot at 0.007-2.007 and spraying at 4.251-5.047-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/onset_multi/gunshot at 0.007-2.007 and spraying at 4.251-5.047-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_multi/gunshot at 0.007-2.007 and spraying at 4.251-5.047-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/onset_multi/gunshot at 0.007-2.007 and spraying at 4.251-5.047-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_multi/gunshot at 0.007-2.007 and spraying at 4.251-5.047-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/onset_multi/gunshot at 0.007-2.007 and spraying at 4.251-5.047-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>
+        <br> 
+        
+        <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; thump thud at 0.593-2.893 and cow mooing at 4.617-7.241</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/onset_multi/thump thud at 0.593-2.893 and cow mooing at 4.617-7.241-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/onset_multi/thump thud at 0.593-2.893 and cow mooing at 4.617-7.241-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_multi/thump thud at 0.593-2.893 and cow mooing at 4.617-7.241-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/onset_multi/thump thud at 0.593-2.893 and cow mooing at 4.617-7.241-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_multi/thump thud at 0.593-2.893 and cow mooing at 4.617-7.241-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/onset_multi/thump thud at 0.593-2.893 and cow mooing at 4.617-7.241-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_multi/thump thud at 0.593-2.893 and cow mooing at 4.617-7.241-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/onset_multi/thump thud at 0.593-2.893 and cow mooing at 4.617-7.241-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>
+        <br> 
+
+        <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; whistling at 0.12-4.714 and tapping clicking clanking at 0.731-4.171</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/onset_multi/whistling at 0.12-4.714 and tapping clicking clanking at 0.731-4.171-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/onset_multi/whistling at 0.12-4.714 and tapping clicking clanking at 0.731-4.171-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_multi/whistling at 0.12-4.714 and tapping clicking clanking at 0.731-4.171-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/onset_multi/whistling at 0.12-4.714 and tapping clicking clanking at 0.731-4.171-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_multi/whistling at 0.12-4.714 and tapping clicking clanking at 0.731-4.171-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/onset_multi/whistling at 0.12-4.714 and tapping clicking clanking at 0.731-4.171-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/onset_multi/whistling at 0.12-4.714 and tapping clicking clanking at 0.731-4.171-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/onset_multi/whistling at 0.12-4.714 and tapping clicking clanking at 0.731-4.171-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    <br>
+
+    <div id="category4", class="border border-0 bg-light p-5 rounded mt-3 border-dark">
+        <h2>(d). Frequency-controllable. <span class="lead"><font size="3">Specify multiple sound events in the generated audio, with timing controlled by occurrence frequency. </font></p></h2>     
+        <p> <font color="red">For practicality and generality, we also define 'a burst of consecutive short events' as 'one occurrence', such as 'a burst of dog barking' and 'a burst of knocking sounds'. </font></p>
+        <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; cat meowing two times and whistling one times and explosion two times</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/frequency_multi/cat meowing two times and whistling one times and explosion two times-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/frequency_multi/cat meowing two times and whistling one times and explosion two times-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_multi/cat meowing two times and whistling one times and explosion two times-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/frequency_multi/cat meowing two times and whistling one times and explosion two times-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_multi/cat meowing two times and whistling one times and explosion two times-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/frequency_multi/cat meowing two times and whistling one times and explosion two times-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_multi/cat meowing two times and whistling one times and explosion two times-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/frequency_multi/cat meowing two times and whistling one times and explosion two times-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>
+        <br> 
+        
+        <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; door slamming three times and tapping clicking clanking one times</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/frequency_multi/door slamming three times and tapping clicking clanking one times-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/frequency_multi/door slamming three times and tapping clicking clanking one times-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_multi/door slamming three times and tapping clicking clanking one times-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/frequency_multi/door slamming three times and tapping clicking clanking one times-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_multi/door slamming three times and tapping clicking clanking one times-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/frequency_multi/door slamming three times and tapping clicking clanking one times-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_multi/door slamming three times and tapping clicking clanking one times-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/frequency_multi/door slamming three times and tapping clicking clanking one times-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>
+        <br> 
+
+        <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; explosion two times and duck quacking two times</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/frequency_multi/explosion two times and duck quacking two times-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/frequency_multi/explosion two times and duck quacking two times-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_multi/explosion two times and duck quacking two times-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/frequency_multi/explosion two times and duck quacking two times-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_multi/explosion two times and duck quacking two times-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/frequency_multi/explosion two times and duck quacking two times-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_multi/explosion two times and duck quacking two times-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/frequency_multi/explosion two times and duck quacking two times-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>
+        <br> 
+
+        <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; gunshot one times and duck quacking one times and tapping clicking clanking one times</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/frequency_multi/gunshot one times and duck quacking one times and tapping clicking clanking one times-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/frequency_multi/gunshot one times and duck quacking one times and tapping clicking clanking one times-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_multi/gunshot one times and duck quacking one times and tapping clicking clanking one times-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/frequency_multi/gunshot one times and duck quacking one times and tapping clicking clanking one times-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_multi/gunshot one times and duck quacking one times and tapping clicking clanking one times-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/frequency_multi/gunshot one times and duck quacking one times and tapping clicking clanking one times-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_multi/gunshot one times and duck quacking one times and tapping clicking clanking one times-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/frequency_multi/gunshot one times and duck quacking one times and tapping clicking clanking one times-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>
+        <br> 
+
+        <div class="instance_container">
+            <div class="instance_text_container"><strong><em>Text input:</em></strong>&ensp; sheep goat bleating one times and door knocking two times</div>
+            <div class="sample_container">          
+                <div class="sample_4">
+                    <p><strong>Simulated audio (Ground truth)</strong></p>
+                    <audio controls="" preload="none"><source src="store/demo_data/frequency_multi/sheep goat bleating one times and door knocking two times-gt.wav" type="audio/wav"></audio>
+                    <br>                       
+                    <img src="store/demo_data/frequency_multi/sheep goat bleating one times and door knocking two times-gt.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>PicoAudio (Ours)</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_multi/sheep goat bleating one times and door knocking two times-cataudio.wav" type="audio/wav"></audio>
+                    <br>         
+                    <img src="store/demo_data/frequency_multi/sheep goat bleating one times and door knocking two times-cataudio.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>Amphion</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_multi/sheep goat bleating one times and door knocking two times-amphion.wav" type="audio/wav"></audio>
+                    <br>    
+                    <img src="store/demo_data/frequency_multi/sheep goat bleating one times and door knocking two times-amphion.png" alt="Your Image">
+                </div>
+                <div class="sample_4">
+                    <p><strong>AudioLDM2</strong></p>
+                    <audio controls="" preload="none" style="max-width: 100%"><source src="store/demo_data/frequency_multi/sheep goat bleating one times and door knocking two times-audioldm2.wav" type="audio/wav"></audio>
+                    <br>
+                    <img src="store/demo_data/frequency_multi/sheep goat bleating one times and door knocking two times-audioldm2.png" alt="Your Image">   
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        &copy; 2024 PicoAudio
+    </footer>
+</body>
+</html>
